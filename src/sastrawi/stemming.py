@@ -48,7 +48,7 @@ class Stemmer():
         """
         Stem a text string to its common stem form.
         """
-        
+
         if type(text) != str:
             raise TypeError('text must be a string!')
 
@@ -106,13 +106,14 @@ class Stemmer():
 
     def _plural_context(self, word):
 
-        # check if word is singular
+        # check if word is singular by splitting hypens
         matches = re.match(r'^(.*)-(.*)$', word)
         if not matches:
             return self._singular_context(word)
 
         words = [matches.group(1), matches.group(2)]
 
+        # resolve:
         # malaikat-malaikat-nya -> malaikat malaikat-nya
         suffix = words[1]
         suffixes = ['ku', 'mu', 'nya', 'lah', 'kah', 'tah', 'pun']
@@ -121,18 +122,22 @@ class Stemmer():
             words[0] = matches.group(1)
             words[1] = matches.group(2) + suffix
 
+        # resolve:
         # berbalas-balasan -> balas
         word1, removals1 = self._singular_context(words[0])
         word2, removals2 = self._singular_context(words[1])
 
+        # resolve:
         # meniru-nirukan -> tiru
         if not words[1] in self.rootwords and word2 == words[1]:
             word2, removals1 = self._singular_context('me' + words[1])
 
+        # repeated word form?
         if word1 == word2:
             removals = list(set(removals1 + removals2))
             return [word1, removals]
 
+        # can't be stemmed
         return [word, list()]
 
     def _singular_context(self, word):
@@ -164,7 +169,7 @@ class Context():
         else:
             self.result = self.original_word
             self.removals = []
-        
+
     def stop_process(self):
         """
         Stop stemming process.
@@ -257,7 +262,7 @@ class Context():
         """
         Accept prefix_visitors rules.
         """
-        for try_ in range(3):
+        for repeat in range(3):
             # accept_prefix_visitors
             removal_count = len(self.removals)
 
@@ -303,6 +308,4 @@ class Context():
         """
         Check whether the removed part is a suffix.
         """
-        return removal.affixType == 'DS' \
-                or removal.affixType == 'PP' \
-                or removal.affixType == 'P'
+        return removal.affixType in {'DS', 'PP', 'P'}
