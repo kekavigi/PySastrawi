@@ -1,6 +1,6 @@
 # Stemmer
 
-Ini adalah kode Python sederhana yang memungkinkan anda untuk mengubah kata berimbuhan dalam Bahasa Indonesia ke bentuk kata dasar ([stem](http://en.wikipedia.org/wiki/Stemming)). Proyek ini adalah perbaikan dari proyek [PySastrawi]https://github.com/har07/PySastrawi).
+Ini adalah kode Python sederhana yang memungkinkan anda untuk mengubah kata berimbuhan dalam Bahasa Indonesia ke bentuk kata dasar ([stem](http://en.wikipedia.org/wiki/Stemming)). Proyek ini adalah perbaikan dari proyek [PySastrawi](https://github.com/har07/PySastrawi).
 
 Penggunaan
 -----------
