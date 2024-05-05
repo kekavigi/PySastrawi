@@ -7,7 +7,7 @@ import os
 import sastrawi.rules as Rules
 
 
-class Stemmer():
+class Stemmer:
     """
     Indonesian sentence stemmer.
 
@@ -18,13 +18,13 @@ class Stemmer():
     def __init__(self, rootwords=None, stopwords=None):
 
         current_dir = os.path.dirname(os.path.realpath(__file__))
-        err_msg = '{} is missing. It seems that your installation is corrupted'
+        err_msg = "{} is missing. It seems that your installation is corrupted"
 
         if rootwords is None:
             try:
-                filepath = '/data/rootwords.txt'
-                with open(current_dir + filepath, 'r') as file:
-                    words = file.read().split('\n')
+                filepath = "/data/rootwords.txt"
+                with open(current_dir + filepath, "r") as file:
+                    words = file.read().split("\n")
                     self.rootwords = set(words)
             except FileNotFoundError:
                 raise RuntimeError(err_msg.format(filepath)) from None
@@ -33,9 +33,9 @@ class Stemmer():
 
         if stopwords is None:
             try:
-                filepath = '/data/stopwords.txt'
-                with open(current_dir + filepath, 'r') as file:
-                    words = file.read().split('\n')
+                filepath = "/data/stopwords.txt"
+                with open(current_dir + filepath, "r") as file:
+                    words = file.read().split("\n")
                     self.stopwords = set(words)
             except FileNotFoundError:
                 raise RuntimeError(err_msg.format(filepath)) from None
@@ -50,13 +50,13 @@ class Stemmer():
         """
 
         if type(text) != str:
-            raise TypeError('text must be a string!')
+            raise TypeError("text must be a string!")
 
         # normalize_text
         result = text.lower()  # lower the text even unicode given
-        result = re.sub(r'[^a-z0-9 -]', ' ', result, flags=re.IGNORECASE|re.MULTILINE)
-        result = re.sub(r'( +)', ' ', result, flags=re.IGNORECASE|re.MULTILINE)
-        words = result.strip().split(' ')
+        result = re.sub(r"[^a-z0-9 -]", " ", result, flags=re.IGNORECASE | re.MULTILINE)
+        result = re.sub(r"( +)", " ", result, flags=re.IGNORECASE | re.MULTILINE)
+        words = result.strip().split(" ")
 
         stems = list()
 
@@ -65,7 +65,7 @@ class Stemmer():
                 self._cache[word] = self.context(word)[0]
             stems.append(self._cache[word])
 
-        return ' '.join(stems)
+        return " ".join(stems)
 
     def remove_stopword(self, text):
         """
@@ -73,12 +73,12 @@ class Stemmer():
         """
 
         if type(text) != str:
-            raise TypeError('text must be a string!')
+            raise TypeError("text must be a string!")
 
-        words = text.lower().split(' ')
+        words = text.lower().split(" ")
         stopped_words = [w for w in words if w not in self.stopwords]
 
-        return ' '.join(stopped_words)
+        return " ".join(stopped_words)
 
     def _is_plural(self, word):
         """
@@ -87,10 +87,10 @@ class Stemmer():
 
         # -ku|-mu|-nya
         # nikmat-Ku, etc
-        matches = re.match(r'^(.*)-(ku|mu|nya|lah|kah|tah|pun)$', word)
+        matches = re.match(r"^(.*)-(ku|mu|nya|lah|kah|tah|pun)$", word)
         if matches:
-            return matches.group(1).find('-') != -1
-        return word.find('-') != -1
+            return matches.group(1).find("-") != -1
+        return word.find("-") != -1
 
     def context(self, word):
         """
@@ -98,7 +98,7 @@ class Stemmer():
         """
 
         if type(word) != str:
-            raise TypeError('word must be a string!')
+            raise TypeError("word must be a string!")
 
         if self._is_plural(word):
             return self._plural_context(word)
@@ -107,7 +107,7 @@ class Stemmer():
     def _plural_context(self, word):
 
         # check if word is singular by splitting hypens
-        matches = re.match(r'^(.*)-(.*)$', word)
+        matches = re.match(r"^(.*)-(.*)$", word)
         if not matches:
             return self._singular_context(word)
 
@@ -116,8 +116,8 @@ class Stemmer():
         # resolve:
         # malaikat-malaikat-nya -> malaikat malaikat-nya
         suffix = words[1]
-        suffixes = ['ku', 'mu', 'nya', 'lah', 'kah', 'tah', 'pun']
-        matches = re.match(r'^(.*)-(.*)$', words[0])
+        suffixes = ["ku", "mu", "nya", "lah", "kah", "tah", "pun"]
+        matches = re.match(r"^(.*)-(.*)$", words[0])
         if suffix in suffixes and matches:
             words[0] = matches.group(1)
             words[1] = matches.group(2) + suffix
@@ -130,7 +130,7 @@ class Stemmer():
         # resolve:
         # meniru-nirukan -> tiru
         if not words[1] in self.rootwords and word2 == words[1]:
-            word2, removals1 = self._singular_context('me' + words[1])
+            word2, removals1 = self._singular_context("me" + words[1])
 
         # repeated word form?
         if word1 == word2:
@@ -146,7 +146,7 @@ class Stemmer():
         return [t.result, removals]
 
 
-class Context():
+class Context:
     """
     Stemming Context using Nazief and Adriani, CS, ECS, Improved ECS.
     """
@@ -156,7 +156,7 @@ class Context():
         self.process_is_stopped = False
         self.original_word = original_word
         self.current_word = original_word
-        self.result = ''
+        self.result = ""
         self.dictionary = dictionary
         self.removals = []
 
@@ -194,7 +194,7 @@ class Context():
 
         # Confix Stripping
         # Try to remove prefix before suffix if the specification is met
-        if Rules.isPAS(self.original_word):
+        if Rules.is_PAS(self.original_word):
             # step 4, 5
             self.remove_prefixes()
             if self.process_is_stopped:
@@ -226,7 +226,7 @@ class Context():
             self.current_word = self.removals[0].subject
 
         for removal in self.removals:
-            if removal.affixType == 'DP':
+            if removal.affixType == "DP":
                 self.removals.remove(removal)
 
         # ECS loop pengembalian akhiran
@@ -238,14 +238,14 @@ class Context():
             if not self.is_suffix_removal(removal):
                 continue
 
-            if removal.removedPart == 'kan':
-                self.current_word = removal.result + 'k'
+            if removal.removedPart == "kan":
+                self.current_word = removal.result + "k"
 
                 # step 4,5
                 self.remove_prefixes()
                 if self.process_is_stopped:
                     return
-                self.current_word = removal.result + 'kan'
+                self.current_word = removal.result + "kan"
 
             else:
                 self.current_word = removal.subject
@@ -308,4 +308,4 @@ class Context():
         """
         Check whether the removed part is a suffix.
         """
-        return removal.affixType in {'DS', 'PP', 'P'}
+        return removal.affixType in {"DS", "PP", "P"}
