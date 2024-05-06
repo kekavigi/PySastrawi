@@ -6,7 +6,7 @@ Ini adalah kode Python sederhana yang memungkinkan anda untuk mengubah kata beri
 ## Penggunaan
 
 ```python
-from sastrawi import Stemmer
+from sastrawi.stemming import Stemmer
 
 stemmer = Stemmer()
 
