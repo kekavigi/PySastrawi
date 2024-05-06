@@ -1,7 +1,7 @@
 from sastrawi.rules import is_PAS, is_invalid_APS
 
 
-def test_is_PAS():
+def test_is_PAS() -> None:
     assert is_PAS("bermasalah") == True
     assert is_PAS("bersekolah") == True
     assert is_PAS("bertahan") == True
@@ -12,7 +12,7 @@ def test_is_PAS():
     assert is_PAS("menggunakan") == False
 
 
-def test_invalid_APS():
+def test_invalid_APS() -> None:
     # test for invalid affix pair
     assert is_invalid_APS("berjatuhi") == True
     assert is_invalid_APS("dipukulan") == True

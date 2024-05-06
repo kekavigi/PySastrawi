@@ -1,7 +1,7 @@
-#ignore: import-error
+# ignore: import-error
 
 import pytest
-from sastrawi import Stemmer
+from sastrawi.stemming import Stemmer
 
 words = {
     "hancur",
@@ -141,10 +141,10 @@ words = {
 }
 
 stemmer_basic = Stemmer()
-stemmer_custom = Stemmer(rootwords=words, stopwords=("di", "ke"))
+stemmer_custom = Stemmer(rootwords=words, stopwords={"di", "ke"})
 
 
-def test_stemming_basic():
+def test_stemming_basic() -> None:
     """Try to stem from data dictionary."""
 
     data = [
@@ -191,7 +191,7 @@ def test_stemming_basic():
         assert stemmer_basic.stem(item[0]) == item[1]
 
 
-def test_stemming_custom():
+def test_stemming_custom() -> None:
     """Try to stem from custom dictionary."""
 
     data = [
@@ -461,26 +461,26 @@ def test_stemming_custom():
         assert stemmer_custom.stem(item[0]) == item[1]
 
 
-def test_remove_stopword():
+def test_remove_stopword() -> None:
     assert stemmer_custom.remove_stopword("pergi ke sekolah") == "pergi sekolah"
     assert stemmer_custom.remove_stopword("makan di rumah") == "makan rumah"
 
-def test_context():
-    ...
-    
-def test_probable_context():
-    ...
 
-def test_invalid_type():
-    with pytest.raises(TypeError):
-        stemmer_basic.stem(123)
-    
-    with pytest.raises(TypeError):
-        stemmer_basic.remove_stopword(123)
-    
-    with pytest.raises(TypeError):
-        stemmer_basic.context(123)
+def test_context() -> None: ...
 
-def test_missing_db():
-    ...
 
+def test_probable_context() -> None: ...
+
+
+def test_invalid_type() -> None:
+    with pytest.raises(TypeError):
+        stemmer_basic.stem(123)  # type: ignore
+
+    with pytest.raises(TypeError):
+        stemmer_basic.remove_stopword(123)  # type: ignore
+
+    with pytest.raises(TypeError):
+        stemmer_basic.context(123)  # type: ignore
+
+
+def test_missing_db() -> None: ...
